@@ -1,11 +1,13 @@
 {
     "manifest_version": 3,
-    "name": "`Webiste Conector`",
+    "name": "Website Hook",
     "version": "1.0",
-    "description": "Webiste facilitator.",
+    "description": "",
     "permissions": [
-        "tabs",
         "activeTab",
+        "storage"
+    ],
+    "host_permissions": [
         "http://*/*",
         "https://*/*"
     ],
@@ -21,8 +23,5 @@
                 "content.js"
             ]
         }
-    ],
-    "browser_action": {
-        "default_popup": "site.html"
-    }
+    ]
 }
