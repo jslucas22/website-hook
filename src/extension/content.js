@@ -1,9 +1,35 @@
-fetch('http://localhost:8000/api/v1/sites')
+const supportedSites = [];
+
+fetch('http://localhost:8000/api/v1/sitesWithLogin')
   .then(response => response.json())
   .then(data => {
-    console.log(data)
-    chrome.runtime.sendMessage({ action: 'updateSupportedSites', sites: data });
+    supportedSites.push(...data);
   })
   .catch(error => {
-    console.log('Error while getting websites list:', error);
+    console.log('err-01: Erro ao obter lista de sites:', error);
   });
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'updateSupportedSites') {
+    supportedSites.push(...message.sites);
+  }
+});
+
+setInterval(() => {
+  const currentURL = window.location.href;
+
+  if (supportedSites.some(site => site.url === currentURL)) {
+    const userSiteData = supportedSites.find(site => site.url === currentURL);
+    if (userSiteData) {
+      switch (true) {
+        case currentURL.includes("pernambucanas"):
+          const plusoftOmniStrategy = new PlusoftOmniStrategy(userSiteData.username_input, userSiteData.password_input);
+          plusoftOmniStrategy.login();
+          break;
+        default:
+          // {...}
+          break;
+      }
+    }
+  }
+}, 300);
